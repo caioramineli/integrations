@@ -1,2 +1,2 @@
-# integrations
+# Integrations
  backend for professional integrations
