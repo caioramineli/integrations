@@ -10,46 +10,51 @@ router.get('/', (req, res) => {
     res.send('Bem-vindo à página inicial!');
 });
 
-router.post('/schedule-event', (req, res) => {
+router.post('/schedule-event', async (req, res) => {
 
-    const { message } = req.body;
+    const {
+        description,
+        customer,
+        payment
+    } = req.body;
 
     const delayInMinutes = 1;
-    const data = new Date(Date.now() + delayInMinutes * 60 * 1000);
+    const scheduleDate = new Date(Date.now() + delayInMinutes * 60 * 1000);
+
+    const newSchedule = new Schedule({
+        description,
+        customer,
+        payment,
+        scheduleDate
+    });
 
     // Agendando o job para o horário definido
-    const job = nodeSchedule.scheduleJob(data, async () => {
+    const job = nodeSchedule.scheduleJob(scheduleDate, async () => {
         try {
+            // Enviar a requisição para o webhook
             const response = await axios.post(process.env.WEBHOOK_DELETE, {
-                message: message,
-                job: job
+                description,
+                customer,
+                payment,
+                message
             });
             console.log('Requisição enviada com sucesso:', response.data);
+
+            await Schedule.updateOne({ jobId: job.name }, { $set: { status: 'completed' } });
         } catch (error) {
             console.error('Erro ao enviar a requisição:', error.message);
+
+            await Schedule.updateOne({ jobId: job.name }, { $set: { status: 'failed' } });
         }
     });
+
+    newSchedule.jobId = job.name;
+    await newSchedule.save();
 
     // Respondendo ao cliente que o agendamento foi feito
     res.status(200).json({ msg: `Requisição agendada para ser enviada em ${delayInMinutes} minutos.` });
 });
 
-router.post('/schedule', async (req, res) => {
-    try {
-        const { title, date, description } = req.body;
-
-        const newSchedule = new Schedule({
-            title,
-            date,
-            description,
-        });
-
-        const savedSchedule = await newSchedule.save();
-        res.status(201).json({ message: 'Agendamento criado com sucesso!', schedule: savedSchedule });
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao criar agendamento', details: error.message });
-    }
-});
 
 
 module.exports = router;
