@@ -54,12 +54,9 @@ const scheduleSchema = new mongoose.Schema({
             type: Date,
             required: true
         },
-        installments: {
+        installment: {
             type: Number,
             default: 1
-        },
-        installmentValue: {
-            type: Number
         }
     }
 });
