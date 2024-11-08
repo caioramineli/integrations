@@ -4,6 +4,15 @@ const scheduleSchema = new mongoose.Schema({
     description: {
         type: String
     },
+    jobId: {
+        type: String
+    },
+    scheduleDate: {
+        type: Date
+    },
+    status: {
+        type: String
+    },
     customer: {
         id: {
             type: String
@@ -52,12 +61,6 @@ const scheduleSchema = new mongoose.Schema({
         installmentValue: {
             type: Number
         }
-    },
-    jobId: {
-        type: String
-    },
-    scheduleDate: {
-        type: Date
     }
 });
 
