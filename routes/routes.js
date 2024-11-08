@@ -35,8 +35,7 @@ router.post('/schedule-event', async (req, res) => {
             const response = await axios.post(process.env.WEBHOOK_DELETE, {
                 description,
                 customer,
-                payment,
-                message
+                payment
             });
             console.log('Requisição enviada com sucesso:', response.data);
 
