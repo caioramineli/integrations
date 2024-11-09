@@ -31,7 +31,7 @@ const scheduleSchema = new mongoose.Schema({
         },
         address: {
             street: { type: String },
-            number: { type: Number },
+            number: { type: String },
             city: { type: String },
             state: { type: String },
             zipCode: { type: String }
