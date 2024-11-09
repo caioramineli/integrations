@@ -55,7 +55,7 @@ const scheduleSchema = new mongoose.Schema({
             required: true
         },
         installment: {
-            type: Number,
+            type: String,
             default: 1
         }
     }
