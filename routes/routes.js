@@ -27,8 +27,8 @@ router.post('/schedule-event', verifyApiKey, async (req, res) => {
         payment
     } = req.body;
 
-    const delayInMinutes = 1;
-    const scheduleDate = new Date(Date.now() + delayInMinutes * 60 * 1000);
+    const delayInDays = 5;
+    const scheduleDate = new Date(Date.now() + delayInDays * 24 * 60 * 60 * 1000);
 
     // Criando o agendamento no banco com status inicial como 'scheduled'
     const newSchedule = new Schedule({
@@ -65,7 +65,7 @@ router.post('/schedule-event', verifyApiKey, async (req, res) => {
     await newSchedule.save();
 
     // Respondendo ao cliente que o agendamento foi feito
-    res.status(200).json({ msg: `Requisição agendada para ser enviada em ${delayInMinutes} minutos.` });
+    res.status(200).json({ msg: `Requisição agendada para ser enviada em ${delayInDays} minutos.` });
 });
 
 router.get('/api/protected', verifyApiKey, (req, res) => {
