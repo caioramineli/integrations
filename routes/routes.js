@@ -10,7 +10,17 @@ router.get('/', (req, res) => {
     res.send('Bem-vindo à página inicial!');
 });
 
-router.post('/schedule-event', async (req, res) => {
+const verifyApiKey = (req, res, next) => {
+    const apiKey = req.headers['auth'];
+
+    if (apiKey && apiKey === process.env.API_KEY) {
+        return next();
+    }
+
+    return res.status(401).json({ error: 'API Key inválida ou ausente' });
+};
+
+router.post('/schedule-event', verifyApiKey, async (req, res) => {
     const {
         description,
         customer,
@@ -56,6 +66,10 @@ router.post('/schedule-event', async (req, res) => {
 
     // Respondendo ao cliente que o agendamento foi feito
     res.status(200).json({ msg: `Requisição agendada para ser enviada em ${delayInMinutes} minutos.` });
+});
+
+router.get('/api/protected', verifyApiKey, (req, res) => {
+    res.json({ message: 'Acesso concedido! Você acessou um recurso protegido.' });
 });
 
 module.exports = router;
