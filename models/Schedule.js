@@ -58,6 +58,9 @@ const scheduleSchema = new mongoose.Schema({
             type: String,
             default: 1
         }
+    },
+    step: {
+        type: String
     }
 });
 
